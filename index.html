@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta · Aeroméxico × ARDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A2240;--navy2:#0d2a52;--navy-deep:#061429;
+  --red:#E4002B;--red-soft:#c8102e;
+  --paper:#F5F5F7;--ink:#0c1a30;--mute:#5b6680;--line:#e3e6ee;
+  --display:"Bricolage Grotesque",serif;--body:"Hanken Grotesk",sans-serif;--mono:"JetBrains Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--body);background:#fff;color:var(--ink);overflow-x:hidden}
+::selection{background:var(--red);color:#fff}
+img{display:block;max-width:100%}
+
+.progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:9999;background:var(--red)}
+.cursor{position:fixed;width:30px;height:30px;border:1.5px solid var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;left:0;top:0}
+.cursor.big{width:64px;height:64px;background:rgba(228,0,43,.12)}
+@media(hover:none){.cursor{display:none}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:9000;display:flex;justify-content:space-between;align-items:center;padding:18px 38px;transition:all .4s}
+nav.solid{background:rgba(255,255,255,.82);backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--line);padding:12px 38px}
+nav .lg{height:26px;opacity:0;transition:opacity .4s}
+nav.solid .lg{opacity:1}
+nav .brand{font-family:var(--display);font-weight:800;letter-spacing:.16em;font-size:14px;color:#fff;transition:color .4s}
+nav.solid .brand{color:var(--navy)}
+nav .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.85);transition:color .4s}
+nav.solid .tag{color:var(--mute)}
+
+.hero{position:relative;height:100vh;min-height:680px;overflow:hidden;display:flex;align-items:flex-end}
+.hero .bg{position:absolute;inset:0;z-index:0;background:url('assets/banner.jpg') center/cover no-repeat;transform:scale(1.08);will-change:transform}
+.hero .veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,20,41,.6) 0%,rgba(6,20,41,.05) 30%,rgba(6,20,41,.4) 60%,rgba(6,20,41,.94) 100%)}
+.hero .flightpath{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:.5}
+.hero .flightpath path{fill:none;stroke:rgba(255,255,255,.4);stroke-width:1.4;stroke-dasharray:5 9}
+.hero .plane{fill:#fff;filter:drop-shadow(0 0 6px rgba(255,255,255,.7))}
+.hero-inner{position:relative;z-index:3;padding:0 38px 8vh;max-width:1300px;width:100%;margin:0 auto}
+.hero .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:#fff;opacity:0;animation:rise 1s .2s forwards;margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.hero .eyebrow::before{content:"";width:38px;height:1px;background:var(--red)}
+.hero h1{font-family:var(--display);font-weight:800;color:#fff;line-height:.98;letter-spacing:-.02em;font-size:clamp(38px,6.4vw,96px);max-width:16ch}
+.hero h1 span{display:block;opacity:0;transform:translateY(40px);animation:rise 1s forwards}
+.hero h1 span:nth-child(1){animation-delay:.3s}
+.hero h1 span:nth-child(2){animation-delay:.42s}
+.hero h1 .red{color:var(--red);-webkit-text-fill-color:var(--red)}
+.hero .sub{margin-top:24px;max-width:600px;font-size:clamp(16px,1.7vw,20px);line-height:1.5;color:#dbe3f2;opacity:0;animation:rise 1s .7s forwards}
+.hero .mantra{margin-top:26px;font-family:var(--display);font-style:italic;font-size:clamp(15px,1.6vw,19px);color:#fff;opacity:0;animation:rise 1s .85s forwards;display:flex;align-items:center;gap:12px}
+.hero .mantra::before{content:"";width:3px;height:20px;background:var(--red);border-radius:3px}
+.hero .credit{margin-top:30px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#aebbd6;opacity:0;animation:rise 1s 1s forwards}
+.hero .credit .chip{border:1px solid rgba(255,255,255,.25);padding:8px 16px;border-radius:30px;color:#fff}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+.scrollcue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;color:#cdd6ea;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:rise 1s 1.3s forwards}
+.scrollcue .line{width:1px;height:36px;background:linear-gradient(#fff,transparent);animation:drop 1.9s infinite}
+@keyframes drop{0%,100%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+section{position:relative}
+.wrap{max-width:1160px;margin:0 auto;padding:120px 38px}
+.lite{background:var(--paper)}
+.white{background:#fff}
+.dark2{background:linear-gradient(165deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff}
+
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.kicker::before{content:"";width:40px;height:1px;background:var(--red)}
+.dark2 .kicker{color:#ff8aa1}
+.comp-no{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--mute);text-transform:uppercase;margin-bottom:10px}
+.dark2 .comp-no{color:#9fb1da}
+h2{font-family:var(--display);font-weight:700;letter-spacing:-.022em;line-height:1.03;font-size:clamp(31px,4.8vw,62px);color:inherit}
+h2 .sm{display:block;font-size:.45em;color:var(--mute);font-weight:600;margin-top:10px;letter-spacing:0}
+.dark2 h2 .sm{color:#9fb1da}
+.lead{font-size:clamp(17px,2vw,23px);line-height:1.52;color:var(--mute);max-width:800px;margin-top:24px}
+.dark2 .lead{color:#c3cee6}
+.lead b{color:var(--ink);font-weight:600}
+.dark2 .lead b{color:#fff}
+p.body{font-size:17px;line-height:1.64;color:var(--mute);max-width:760px;margin:16px 0}
+.dark2 p.body{color:#b7c3de}
+p.body b{color:var(--ink);font-weight:600}
+.dark2 p.body b{color:#fff}
+
+.rv{opacity:0;transform:translateY(46px);transition:all 1s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px}
+.pain{background:#fff;border:1px solid var(--line);border-radius:20px;padding:36px;transition:all .45s}
+.pain:hover{transform:translateY(-6px);box-shadow:0 24px 50px -28px rgba(10,34,64,.35);border-color:#cdd4e4}
+.pain .n{font-family:var(--display);font-size:17px;font-weight:800;color:var(--red);letter-spacing:.05em}
+.pain h3{font-family:var(--display);font-size:23px;font-weight:700;margin:14px 0 12px;color:var(--ink)}
+.pain p{color:var(--mute);font-size:16px;line-height:1.55}
+.reqs{display:flex;gap:16px;flex-wrap:wrap;margin-top:28px}
+.chip{font-family:var(--mono);font-size:13px;padding:14px 22px;border-radius:40px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.chip b.ar{color:var(--red);margin-right:6px}
+
+.systems{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px}
+.sys{padding:42px 36px;border-radius:22px;position:relative;overflow:hidden}
+.sys.a{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16)}
+.sys.b{background:linear-gradient(160deg,rgba(228,0,43,.22),rgba(228,0,43,.05));border:1px solid rgba(228,0,43,.4)}
+.sys .ic{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#ff8aa1;margin-bottom:16px}
+.sys h3{font-family:var(--display);font-size:24px;font-weight:700;margin-bottom:12px;color:#fff}
+.sys p{color:#c8d3ea;font-size:16px;line-height:1.55}
+.pull{padding:8px 0 8px 28px;margin:44px 0 0;border-left:3px solid var(--red);font-family:var(--display);font-size:clamp(21px,2.9vw,33px);line-height:1.26;color:#fff;font-weight:600;max-width:900px}
+.pull.onlite{color:var(--ink)}
+
+/* instructor sticky */
+.sticky-sec{background:var(--paper)}
+.sticky-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;max-width:1160px;margin:0 auto;padding:120px 38px;align-items:start}
+.sticky-media{position:sticky;top:90px;border-radius:24px;overflow:hidden;box-shadow:0 40px 80px -40px rgba(10,34,64,.5);aspect-ratio:4/5}
+.sticky-media img{width:100%;height:100%;object-fit:cover}
+.sticky-media .cap{position:absolute;left:18px;bottom:18px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(6,20,41,.55);backdrop-filter:blur(8px);padding:8px 14px;border-radius:30px}
+.feat{list-style:none;margin-top:24px;display:grid;gap:0}
+.feat li{padding:20px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:32px 1fr;gap:16px;font-size:16.5px;line-height:1.55;color:var(--mute);transition:padding .35s,color .35s}
+.feat li:last-child{border-bottom:1px solid var(--line)}
+.feat li:hover{padding-left:12px;color:var(--ink)}
+.feat li .k{font-family:var(--mono);color:var(--red);font-size:14px;font-weight:500}
+.feat li b{color:var(--ink);font-weight:600}
+.dark2 .feat li{border-color:rgba(255,255,255,.14);color:#b7c3de}
+.dark2 .feat li:last-child{border-color:rgba(255,255,255,.14)}
+.dark2 .feat li:hover{color:#fff}
+.dark2 .feat li b{color:#fff}
+
+.motor{margin-top:30px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:14px;padding:24px 26px}
+.motor .mt{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.motor p{font-size:15.5px;line-height:1.6;color:var(--ink);margin:0}
+.motor b{font-weight:600}
+
+/* arch table */
+.atable{margin-top:42px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.atable .head,.atable .row{display:grid;grid-template-columns:1fr 2fr 1.4fr;gap:0}
+.atable .head{background:var(--navy);color:#fff}
+.atable .head div{padding:16px 22px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.atable .row{border-top:1px solid var(--line);transition:background .35s}
+.atable .row:hover{background:#fafbfe}
+.atable .row div{padding:20px 22px;font-size:15.5px;line-height:1.5;color:var(--mute);display:flex;align-items:center}
+.atable .row .cap{font-weight:600;color:var(--ink);font-family:var(--display);font-size:17px}
+.atable .row .tool{color:var(--ink)}
+.atable .row .tool b{color:var(--red);font-weight:600}
+.note{margin-top:22px;font-size:15px;line-height:1.6;color:var(--mute);background:#fff;border:1px dashed var(--line);border-radius:14px;padding:18px 22px;max-width:820px}
+.note b{color:var(--ink)}
+.empflow{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px;align-items:center}
+.empflow .s{background:#fff;border:1px solid var(--line);border-radius:40px;padding:12px 20px;font-size:14px;color:var(--ink);font-weight:500}
+.empflow .s.win{background:var(--navy);color:#fff;border-color:var(--navy)}
+.empflow .ar{color:var(--red);font-weight:700;font-family:var(--mono)}
+
+/* incentive levels */
+.levels{margin-top:42px;display:grid;gap:16px}
+.lvl{display:grid;grid-template-columns:230px 1fr;gap:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;transition:all .45s}
+.lvl:hover{transform:translateX(8px);box-shadow:0 24px 50px -30px rgba(10,34,64,.35)}
+.lvl .side{padding:26px 26px;display:flex;flex-direction:column;gap:8px;justify-content:center;color:#fff;position:relative}
+.lvl .side .dot{font-size:20px}
+.lvl .side h4{font-family:var(--display);font-size:22px;font-weight:700}
+.lvl .side .how{font-family:var(--mono);font-size:11px;letter-spacing:.06em;opacity:.92}
+.lvl.green .side{background:linear-gradient(150deg,#1f9d57,#157a42)}
+.lvl.blue .side{background:linear-gradient(150deg,#1f6fd1,#134e9c)}
+.lvl.purple .side{background:linear-gradient(150deg,#7a3bd1,#532597)}
+.lvl.red .side{background:linear-gradient(150deg,#e4002b,#9c0021)}
+.lvl .recv{padding:26px;display:flex;align-items:center;font-size:16px;line-height:1.55;color:var(--ink)}
+.lvl .recv b{font-weight:600;color:var(--navy)}
+
+.subblock{margin-top:46px}
+.subblock .lab{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.subblock h3{font-family:var(--display);font-size:clamp(21px,2.8vw,28px);font-weight:700;margin-bottom:12px;color:var(--ink)}
+
+/* email flow boarding */
+.flowrail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 38px 26px;margin:40px -38px 0;scrollbar-width:none}
+.flowrail::-webkit-scrollbar{display:none}
+.bp{scroll-snap-align:center;flex:0 0 320px;background:#fff;border:1px solid rgba(255,255,255,.16);border-radius:18px;overflow:hidden;transition:all .45s}
+.bp:hover{transform:translateY(-8px);box-shadow:0 28px 56px -30px rgba(0,0,0,.5)}
+.bp .top{background:var(--red);color:#fff;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em}
+.bp .top .r{opacity:.85}
+.bp .bd{padding:24px 22px 26px;background:#fff}
+.bp h4{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:12px;color:var(--ink)}
+.bp .quote{font-style:italic;color:var(--navy);font-size:15px;line-height:1.45;border-left:2px solid var(--red);padding-left:12px;margin-bottom:12px}
+.bp p{color:var(--mute);font-size:14px;line-height:1.5}
+.railhint{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#9fb1da;margin-top:4px;padding:0 38px}
+
+.closing{text-align:center;padding:140px 38px 110px}
+.closing h2{max-width:1020px;margin:0 auto 26px}
+.closing .lead{margin:0 auto}
+.cta{display:inline-flex;align-items:center;gap:12px;margin-top:46px;font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:19px 36px;border-radius:50px;background:var(--red);color:#fff;border:none;cursor:pointer;transition:all .35s;box-shadow:0 12px 40px -10px rgba(228,0,43,.6)}
+.cta:hover{transform:translateY(-4px);box-shadow:0 18px 50px -10px rgba(228,0,43,.75)}
+
+footer{background:var(--navy-deep);color:#fff;text-align:center;padding:54px 38px;border-top:1px solid rgba(255,255,255,.08)}
+footer .fl{height:38px;margin:0 auto 20px;filter:brightness(0) invert(1);opacity:.9}
+footer .x{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#9aa8c6}
+footer b{color:var(--red)}
+
+@media(max-width:880px){
+  nav{padding:14px 20px}
+  .wrap{padding:80px 22px}
+  .sticky-grid{grid-template-columns:1fr;gap:30px;padding:80px 22px}
+  .sticky-media{position:relative;top:0;aspect-ratio:16/10}
+  .split,.systems{grid-template-columns:1fr}
+  .atable .head{display:none}
+  .atable .row{grid-template-columns:1fr;gap:0}
+  .atable .row div{padding:12px 20px}
+  .atable .row .cap{padding-top:18px}
+  .atable .row .tool{padding-bottom:18px;border-bottom:0}
+  .lvl{grid-template-columns:1fr}
+  .hero-inner{padding-bottom:13vh}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="cursor" id="cursor"></div>
+
+<nav id="nav">
+  <img src="assets/logo.png" class="lg" alt="Aeroméxico">
+  <span class="brand">ARDE × AEROMÉXICO</span>
+  <span class="tag">Propuesta · Documento de estudio</span>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="bg" id="heroBg"></div>
+  <div class="veil"></div>
+  <svg class="flightpath" viewBox="0 0 1440 900" preserveAspectRatio="none">
+    <path id="fpPath" d="M-40,720 C320,680 540,400 800,330 C1060,260 1280,150 1500,40"/>
+    <g id="planeG"><path class="plane" d="M0,-8 L20,0 L0,8 L5,0 Z"/></g>
+  </svg>
+  <div class="hero-inner">
+    <div class="eyebrow">Propuesta — Aeroméxico × ARDE</div>
+    <h1><span>Sistema de Capacitación</span><span>Inteligente <span class="red">+</span> Pertenencia.</span></h1>
+    <p class="sub">Capacitación que la gente <b style="color:#fff">sí quiere tomar</b>, y un programa que convierte <b style="color:#fff">pertenecer al grupo</b> en estatus — con la calidad de producción que la marca Aeroméxico merece.</p>
+    <div class="mantra">"AI is the engine. Humans are the pilots."</div>
+    <div class="credit">
+      <span class="chip">Documento de estudio</span>
+      <span>Por ARDE Agency — Human-Directed AI Creative Studio · 2026</span>
+    </div>
+  </div>
+  <div class="scrollcue"><span>Descubrir</span><span class="line"></span></div>
+</header>
+
+<!-- 01 EL RETO -->
+<section class="white"><div class="wrap">
+  <div class="kicker rv">01 — Contexto</div>
+  <h2 class="rv d1">El reto</h2>
+  <p class="lead rv d1">Aeroméxico impulsa <b>grupos Agile de transformación digital</b> —equipos interdisciplinarios que reúnen lo mejor de cada área para sacar adelante proyectos que llevaban tiempo detenidos. Funcionan, pero hay dos dolores reales que frenan su adopción:</p>
+  <div class="split">
+    <div class="pain rv d1">
+      <div class="n">Dolor 01</div>
+      <h3>Las capacitaciones no enganchan</h3>
+      <p>Se imparten a la manera tradicional —una persona con un PowerPoint en un salón—. El resultado: la gente está en el celular y no retiene nada. El formato perdió la atención del equipo.</p>
+    </div>
+    <div class="pain rv d2">
+      <div class="n">Dolor 02</div>
+      <h3>Pertenecer al grupo no se siente especial</h3>
+      <p>Estar en estos grupos es trabajo extra encima del trabajo normal. Sin un reconocimiento que lo respalde, se vive como una carga y no como el privilegio que debería ser.</p>
+    </div>
+  </div>
+  <p class="body rv d2" style="margin-top:34px;color:var(--ink)"><b>Dos requisitos concretos para la propuesta</b>, que el sistema resuelve de raíz:</p>
+  <div class="reqs rv d2">
+    <div class="chip"><b class="ar">→</b>Que la capacitación sea <b style="color:var(--ink)">un link a una experiencia con test final para acreditar</b></div>
+    <div class="chip"><b class="ar">→</b>Que se pueda <b style="color:var(--ink)">actualizar sin volver a grabar todo</b></div>
+  </div>
+</div></section>
+
+<!-- 02 LA RESPUESTA -->
+<section class="dark2"><div class="wrap">
+  <div class="kicker rv">02 — La respuesta ARDE</div>
+  <h2 class="rv d1">No vendemos software.<br>Construimos un ecosistema.</h2>
+  <p class="lead rv d1">No proponemos comprar una licencia de una herramienta y dejarla ahí. Construimos <b>dos cosas que se alimentan entre sí</b> — una mueve a la otra:</p>
+  <div class="systems">
+    <div class="sys a rv d1">
+      <div class="ic">Sistema 01 · Capacitación</div>
+      <h3>Un sistema de capacitación</h3>
+      <p>Con un instructor sintético de marca, una experiencia visual de verdad y una evaluación que acredita. La gente aprende porque la experiencia la engancha, no porque toca.</p>
+    </div>
+    <div class="sys b rv d2">
+      <div class="ic">Sistema 02 · Pertenencia</div>
+      <h3>Un programa de pertenencia</h3>
+      <p>Con identidad propia, que convierte "estar en el grupo" en estatus. La capacitación le da el contenido; la pertenencia le da la razón emocional para tomarla.</p>
+    </div>
+  </div>
+  <div class="pull rv d2">Lo que la IA logra aquí no es tecnología por mostrar: es que la gente por fin ponga atención y se sienta parte.</div>
+</div></section>
+
+<!-- 03 COMPONENTE 1 -->
+<section class="sticky-sec"><div class="sticky-grid">
+  <div class="sticky-media rv">
+    <img src="assets/banner.jpg" alt="Instructor sintético de marca">
+    <span class="cap">Componente 1 · Instructor sintético — concepto</span>
+  </div>
+  <div>
+    <div class="comp-no rv">Componente 1 · El avatar</div>
+    <h2 class="rv d1" style="font-size:clamp(28px,4.2vw,50px)">El instructor sintético de marca</h2>
+    <p class="body rv d1" style="margin-top:20px;color:var(--ink)">Es el personaje que da todas las capacitaciones. No un avatar de stock genérico: un <b>ente propio de Aeroméxico</b>, con cara y voz exclusivas que no pertenecen a ninguna persona real. Eso significa <b>cero líos legales de imagen</b> y un activo de marca que es 100% de la empresa.</p>
+    <div class="kicker rv d1" style="margin-top:30px;font-size:11px">Qué resuelve</div>
+    <ul class="feat">
+      <li class="rv"><span class="k">A</span><span>Da las capacitaciones con <b>producción cinematográfica</b>, no con slides. El nivel de la marca, también puertas adentro.</span></li>
+      <li class="rv d1"><span class="k">B</span><span><b>Se actualiza sin reshoot:</b> cambió una política, editas el guion y regeneras solo ese segmento. El link se actualiza solo — sin volver a convocar una grabación.</span></li>
+      <li class="rv d1"><span class="k">C</span><span><b>Un solo personaje, consistencia total</b> en todos los cursos: el mismo rostro y la misma voz unifican toda la capacitación.</span></li>
+      <li class="rv d2"><span class="k">D</span><span>Escala a <b>multi-idioma desde un master</b> (rutas internacionales / estaciones USA) con lip-sync, sin volver a producir.</span></li>
+    </ul>
+    <div class="motor rv">
+      <div class="mt">Motor</div>
+      <p><b>Synthesia / HeyGen</b> para arrancar rápido, o un <b>avatar 100% propio producido por ARDE</b> (ComfyUI + Seedance 2.0 + voz de marca con ElevenLabs) como diferenciador — el camino que nadie más en el mercado puede ofrecer al nivel de producción de ARDE.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 04 COMPONENTE 2 -->
+<section class="white"><div class="wrap">
+  <div class="comp-no rv">Componente 2 · La plataforma</div>
+  <h2 class="rv d1">La plataforma de capacitación<span class="sm">Visual + experiencial + test</span></h2>
+  <p class="lead rv d1">El empleado recibe <b>un link y entra a una experiencia</b>, no a un documento que se pasa de largo. Cada capa cumple una función y usa la herramienta correcta para ir rápido sin sacrificar calidad:</p>
+
+  <div class="atable rv d1">
+    <div class="head"><div>Capa</div><div>Qué hace</div><div>Herramienta</div></div>
+    <div class="row"><div class="cap">Experiencia visual</div><div>El curso interactivo, gamificado, por link y pensado para móvil — el corazón visual de la experiencia.</div><div class="tool"><b>Genially</b> &nbsp;(#1 en interactivo/experiencial)</div></div>
+    <div class="row"><div class="cap">Instructor</div><div>El avatar de marca explicando cada tema dentro del curso.</div><div class="tool"><b>Synthesia</b> / avatar propio ARDE</div></div>
+    <div class="row"><div class="cap">Microlearning</div><div>Píldoras de 5–7 min tipo TikTok — resuelve directo el "están en el celular".</div><div class="tool"><b>7taps</b> / EdApp</div></div>
+    <div class="row"><div class="cap">Test final</div><div>Evaluación con pass/fail para acreditar el módulo y demostrar atención real.</div><div class="tool"><b>Typeform</b> o quiz nativo</div></div>
+    <div class="row"><div class="cap">LMS (a futuro)</div><div>Si lo quieren dentro de su sistema corporativo, con trazabilidad SCORM.</div><div class="tool"><b>Articulate Rise 360</b> / SCORM</div></div>
+  </div>
+
+  <div class="kicker rv d1" style="margin-top:46px;font-size:11px">Flujo del empleado</div>
+  <div class="empflow rv d1">
+    <span class="s">Recibe link</span><span class="ar">→</span>
+    <span class="s">Entra a la experiencia Genially</span><span class="ar">→</span>
+    <span class="s">Ve al instructor</span><span class="ar">→</span>
+    <span class="s">Interactúa</span><span class="ar">→</span>
+    <span class="s">Test final</span><span class="ar">→</span>
+    <span class="s win">"Aprobado 85%"</span><span class="ar">→</span>
+    <span class="s">Módulo acreditado</span>
+  </div>
+
+  <div class="note rv d1"><b>Nota sobre Typeform:</b> sí sirve, pero para el test y las encuestas, no para hospedar el curso completo. <b>Genially es el corazón visual</b> de la experiencia; Typeform es la capa de evaluación.</div>
+</div></section>
+
+<!-- 05 COMPONENTE 3 -->
+<section class="lite"><div class="wrap">
+  <div class="comp-no rv">Componente 3 · La marca</div>
+  <h2 class="rv d1">El Programa de Pertenencia<span class="sm">El corazón de Recursos Humanos</span></h2>
+  <p class="lead rv d1">Aquí está el corazón de RH. ARDE le construye una <b>marca interna</b> a la iniciativa para que entrar al grupo se sienta como entrar a algo exclusivo. No es ponerle un logo a una capacitación: es darle a la iniciativa una identidad con la que la gente quiera identificarse.</p>
+
+  <div class="subblock rv">
+    <div class="lab">Pieza A — Identidad del programa</div>
+    <h3>Nombre, logo, manifiesto, sello visual</h3>
+    <p class="body" style="margin-top:0">Que el programa se vea y se sienta distinto a "otro comité interno". Una identidad propia, alineada al ADN de Aeroméxico (su lenguaje de aviación, su orgullo mexicano, su propósito de "elevar"), para que pertenecer sea reconocible y deseable. Esto es <b>músculo puro de ARDE</b>.</p>
+  </div>
+
+  <div class="subblock rv">
+    <div class="lab">Pieza B — Incentivos progresivos (internos y simples)</div>
+    <h3>Se desbloquean a medida que avanzan</h3>
+    <p class="body" style="margin-top:0">Sin complejidad externa: cada paso en la capacitación desbloquea un reconocimiento. La progresión está diseñada para que avanzar se sienta como subir de estatus dentro del programa.</p>
+    <div class="levels">
+      <div class="lvl green rv"><div class="side"><span class="dot">🟢</span><h4>Bienvenido</h4><span class="how">Acepta entrar</span></div><div class="recv"><span><b>Kit de bienvenida digital</b> + insignia inicial + estatus <b>"miembro fundador"</b>.</span></div></div>
+      <div class="lvl blue rv d1"><div class="side"><span class="dot">🔵</span><h4>En marcha</h4><span class="how">Completa 1er módulo</span></div><div class="recv"><span>Nueva <b>insignia</b> + aparece en el <b>ranking de su grupo</b>.</span></div></div>
+      <div class="lvl purple rv d2"><div class="side"><span class="dot">🟣</span><h4>Comprometido</h4><span class="how">Va a mitad</span></div><div class="recv"><span><b>Reconocimiento en canal interno</b> + micro-video del avatar felicitándolo personalmente.</span></div></div>
+      <div class="lvl red rv d3"><div class="side"><span class="dot">🔴</span><h4>Certificado</h4><span class="how">Termina + pasa el test</span></div><div class="recv"><span><b>Certificado interno</b> + mención del líder + posible perk (acceso a contenido exclusivo / reconocimiento del mes).</span></div></div>
+    </div>
+    <div class="pull onlite rv" style="border-color:var(--red);margin-top:34px;font-size:clamp(19px,2.4vw,27px)">Arrancamos con pocos incentivos y subimos según avance — sin sobrecargar. La clave no es el premio grande, es la constancia del reconocimiento.</div>
+  </div>
+
+  <div class="subblock rv">
+    <div class="lab">Pieza C — Ritual de lanzamiento</div>
+    <h3>Un kickoff que marca el inicio</h3>
+    <p class="body" style="margin-top:0">Un arranque con un <b>video del avatar</b> que presenta el programa y le da la bienvenida a los miembros — el momento que hace sentir, desde el día uno, que fueron elegidos para algo importante.</p>
+  </div>
+</div></section>
+
+<!-- 06 COMPONENTE 4 -->
+<section class="dark2"><div class="wrap" style="padding-bottom:60px">
+  <div class="comp-no rv">Componente 4 · La columna vertebral</div>
+  <h2 class="rv d1">El correo + seguimiento</h2>
+  <p class="lead rv d1">Esto es lo fundamental: un <b>flujo automatizado</b> que acompaña a cada miembro y, al mismo tiempo, le da seguimiento y control a Recursos Humanos. Es lo que sostiene a los otros tres componentes en el tiempo.</p>
+  <div class="kicker rv d1" style="margin-top:42px;font-size:11px">El flujo de correos · 5 toques</div>
+</div>
+<div class="flowrail rv">
+  <div class="bp"><div class="top"><span>BOARDING PASS</span><span class="r">CORREO 0</span></div><div class="bd"><h4>La invitación</h4><div class="quote">"Fuiste elegido. No es para todos."</div><p>Genera estatus desde el día 1.</p></div></div>
+  <div class="bp"><div class="top"><span>BOARDING PASS</span><span class="r">CORREO 1</span></div><div class="bd"><h4>Bienvenida</h4><div class="quote">Qué es, qué ganas, con el video del avatar.</div><p>Arranca el primer módulo.</p></div></div>
+  <div class="bp"><div class="top"><span>BOARDING PASS</span><span class="r">CORREO 2</span></div><div class="bd"><h4>Primer logro</h4><div class="quote">"Completaste tu módulo 🎖️"</div><p>Insignia + ranking de tu grupo.</p></div></div>
+  <div class="bp"><div class="top"><span>BOARDING PASS</span><span class="r">CORREO 3</span></div><div class="bd"><h4>Recordatorio con avance</h4><div class="quote">"Te faltan 2 módulos. Tu grupo va de segundo."</div><p>Empuja con gamificación.</p></div></div>
+  <div class="bp"><div class="top"><span>BOARDING PASS</span><span class="r">CORREO 4</span></div><div class="bd"><h4>Certificación</h4><div class="quote">"Eres oficialmente [Certificado]."</div><p>+ reconocimiento.</p></div></div>
+</div>
+<div class="railhint">← Desliza para ver los 5 correos →</div>
+<div class="wrap" style="padding-top:54px">
+  <div class="kicker rv" style="font-size:11px">El seguimiento · lo que le da control a RH</div>
+  <ul class="feat" style="max-width:880px">
+    <li class="rv"><span class="k">↻</span><span><b>Disparadores automáticos:</b> a quien no avanza en X días le llega un recordatorio amable, solo — RH no persigue a nadie.</span></li>
+    <li class="rv d1"><span class="k">◎</span><span><b>Vista personal:</b> cada quien ve su propio avance y nivel dentro del programa.</span></li>
+    <li class="rv d2"><span class="k">▤</span><span><b>Panel para RH:</b> quién completó, quién se quedó, % de aprobación por módulo y ranking entre grupos. Esto le da <b>la data para defender su área y demostrar impacto</b>.</span></li>
+  </ul>
+</div>
+</section>
+
+<!-- CIERRE -->
+<section class="white"><div class="closing">
+  <div class="kicker rv" style="justify-content:center">En síntesis</div>
+  <h2 class="rv d1">Capacitación que la gente sí quiere tomar. Pertenencia que da orgullo. Y un seguimiento que le da a Recursos Humanos control y resultados medibles.</h2>
+  <p class="lead rv d2" style="color:var(--ink)">Todo con la calidad de producción que la marca Aeroméxico merece.</p>
+  <button class="cta rv d2" onclick="window.scrollTo({top:0,behavior:'smooth'})">Volver al inicio ↑</button>
+</div></section>
+
+<footer>
+  <img src="assets/logo.png" class="fl" alt="Aeroméxico">
+  <div class="x">ARDE Agency · Human-Directed AI Creative Studio · <b>Documento de estudio 2026</b></div>
+</footer>
+
+<script>
+const prog=document.getElementById('progress'),nav=document.getElementById('nav');
+addEventListener('scroll',()=>{const h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  nav.classList.toggle('solid',h.scrollTop>innerHeight*.85);});
+const cur=document.getElementById('cursor');let cx=0,cy=0,tx=0,ty=0;
+addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function loop(){cx+=(tx-cx)*.2;cy+=(ty-cy)*.2;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.namecard,.pain,.bp,.lvl,.sys,.atable .row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+const heroBg=document.getElementById('heroBg');
+addEventListener('scroll',()=>{const y=scrollY;if(y<innerHeight)heroBg.style.transform=`scale(1.08) translateY(${y*.18}px)`;});
+const path=document.getElementById('fpPath'),planeG=document.getElementById('planeG'),hero=document.querySelector('.hero');
+function movePlane(t){const len=path.getTotalLength();
+  const r=Math.min(Math.max(-hero.getBoundingClientRect().top/hero.offsetHeight,0),1);
+  const base=((t||0)/9000)%1,p=Math.min(base*0.45+r*0.6,1);
+  const pt=path.getPointAtLength(p*len),pt2=path.getPointAtLength(Math.min(p*len+1,len));
+  const ang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI;
+  planeG.setAttribute('transform',`translate(${pt.x},${pt.y}) rotate(${ang})`);
+  requestAnimationFrame(movePlane);}
+requestAnimationFrame(movePlane);
+</script>
+</body>
+</html>
