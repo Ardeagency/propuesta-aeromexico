@@ -427,5 +427,21 @@ function movePlane(t){const len=path.getTotalLength();
   requestAnimationFrame(movePlane);}
 requestAnimationFrame(movePlane);
 </script>
+<script>
+/* Aviso de apertura del link - push via ntfy.sh (ARDE) */
+(function(){
+  try{
+    if(sessionStorage.getItem('arde_open_aeromxprop'))return;
+    sessionStorage.setItem('arde_open_aeromxprop','1');
+    var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
+    function ping(loc){try{fetch(TOPIC,{method:'POST',
+      headers:{'Title':'ARDE - Abrieron: Aeromexico (propuesta)','Tags':'eyes,memo'},
+      body:'Abrieron la propuesta: Aeromexico (propuesta)\n'+loc+'\nLlego desde: '+(document.referrer||'enlace directo')+'\nDispositivo: '+navigator.userAgent.slice(0,90)});}catch(e){}}
+    fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){
+      ping('Ubicacion: '+(d.city||'?')+', '+(d.region||'')+' '+(d.country_name||'?')+' (IP '+(d.ip||'?')+')');
+    }).catch(function(){ ping('Ubicacion: no disponible'); });
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
