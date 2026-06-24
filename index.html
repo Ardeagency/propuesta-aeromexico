@@ -443,5 +443,36 @@ requestAnimationFrame(movePlane);
   }catch(e){}
 })();
 </script>
+<script>
+/* Heatmap de lectura - resumen al salir, via ntfy.sh (ARDE) */
+(function(){
+  try{
+    var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
+    var LABEL='Aeromexico (propuesta)';
+    var active=0,last=Date.now(),maxPct=0,deepest='',sent=false;
+    function tick(){ if(document.visibilityState==='visible'){active+=Date.now()-last;} last=Date.now(); }
+    setInterval(tick,1000);
+    function onScroll(){ var h=document.documentElement; var sc=h.scrollTop||document.body.scrollTop||0;
+      var p=Math.round((sc+h.clientHeight)/h.scrollHeight*100); if(p>maxPct)maxPct=Math.min(100,p); }
+    window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+    var eb=[].slice.call(document.querySelectorAll('.eyebrow'));
+    if(eb.length && 'IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){
+        if(e.isIntersecting){ deepest=e.target.textContent.trim().replace(/\s+/g,' '); }});},{threshold:.4});
+      eb.forEach(function(el){io.observe(el);});
+    }
+    function fmt(ms){var s=Math.round(ms/1000),m=Math.floor(s/60);return m+'m '+(s%60)+'s';}
+    function send(){ if(sent)return; sent=true; tick();
+      var body='Leyo: '+LABEL+'\nProfundidad: '+maxPct+'%'+(maxPct>=90?' (llego al final)':'')
+        +'\nSeccion mas avanzada: '+(deepest||'inicio')+'\nTiempo activo: '+fmt(active);
+      try{ fetch(TOPIC,{method:'POST',keepalive:true,
+        headers:{'Title':'ARDE - Lectura: '+LABEL,'Tags':'book,bar_chart'},body:body}); }
+      catch(e){ try{navigator.sendBeacon(TOPIC,body);}catch(e2){} }
+    }
+    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden')send(); });
+    window.addEventListener('pagehide',send);
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
