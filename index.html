@@ -433,7 +433,7 @@ requestAnimationFrame(movePlane);
 /* ARDE tracking unificado: apertura + destinatario + visitas + heatmap + clics CTA (ntfy.sh) */
 (function(){
   try{
-    var ARDE_SELF=false;var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
+    var ARDE_SELF=false;/*self*/try{fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true;}).catch(function(){});}catch(e){}var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
     var LABEL='Aeromexico (propuesta)', KEY='aeromxprop';
     function qp(n){try{var m=location.search.match(new RegExp('[?&]'+n+'=([^&]+)'));return m?decodeURIComponent(m[1].replace(/\+/g,' ')):'';}catch(e){return '';}}
     var who=qp('to')||qp('p');
