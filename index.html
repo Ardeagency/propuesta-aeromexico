@@ -430,50 +430,37 @@ requestAnimationFrame(movePlane);
 
 
 <script>
-/* ARDE tracking unificado: apertura + destinatario + visitas + heatmap + clics CTA (ntfy.sh) */
+/* ARDE tracking v2 hardened: filtro bots + Chrome<90 + scanners + gate humano + self-mute + apertura/heatmap/clics (ntfy) */
 (function(){
   try{
-    var ARDE_SELF=false;/*self*/try{fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true;}).catch(function(){});}catch(e){}var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
+    var ARDE_SELF=false;try{fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true;}).catch(function(){});}catch(e){}
+    var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
     var LABEL='Aeromexico (propuesta)', KEY='aeromxprop';
+    var ua=navigator.userAgent||'';
+    if(navigator.webdriver===true||/bot\b|crawl|spider|slurp|bingbot|yandex|baidu|duckduckbot|headless|phantom|puppeteer|playwright|python-|curl\/|wget|libwww|httpclient|okhttp|go-http|java\/|facebookexternalhit|embedly|telegrambot|whatsapp|discordbot|slackbot|twitterbot|linkedinbot|googlebot|applebot|lighthouse|pingdom|uptimerobot|datadog|semrush|ahrefs|mj12bot|dotbot|petalbot|bytespider|gptbot|ccbot|claudebot|amazonbot|zgrab|censys|shodan|expanse|netcraft|httpx|nmap|masscan|paloalto|internetmeasurement/i.test(ua)||(function(){var m=ua.match(/Chrome\/(\d+)/);return !!m&&+m[1]<90;})())return;
     function qp(n){try{var m=location.search.match(new RegExp('[?&]'+n+'=([^&]+)'));return m?decodeURIComponent(m[1].replace(/\+/g,' ')):'';}catch(e){return '';}}
-    var who=qp('to')||qp('p');
-    var whoLine=who?('\nDestinatario: '+who):'';
-    var visits=0;
-    try{ visits=parseInt(localStorage.getItem('arde_v_'+KEY)||'0',10)||0;
-      if(!sessionStorage.getItem('arde_s_'+KEY)){ sessionStorage.setItem('arde_s_'+KEY,'1'); visits+=1; localStorage.setItem('arde_v_'+KEY,String(visits)); }
-    }catch(e){}
-    function post(title,tags,body){if(ARDE_SELF)return; try{ fetch(TOPIC,{method:'POST',keepalive:true,headers:{'Title':title,'Tags':tags},body:body}); }catch(e){ try{navigator.sendBeacon(TOPIC,body);}catch(e2){} } }
-    if(!sessionStorage.getItem('arde_open_'+KEY)){
-      sessionStorage.setItem('arde_open_'+KEY,'1');
-      var rep=visits>=2?(' (visita #'+visits+', repetida)'):'';
-      function openPing(loc){ post('ARDE - Abrieron: '+LABEL,(visits>=2?'fire,eyes':'eyes'),
-        'Abrieron: '+LABEL+rep+whoLine+'\n'+loc+'\nLlego desde: '+(document.referrer||'enlace directo')+'\nDispositivo: '+navigator.userAgent.slice(0,90)); }
-      fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true;
-        openPing('Ubicacion: '+(d.city||'?')+', '+(d.region||'')+' '+(d.country_name||'?')+' (IP '+(d.ip||'?')+')');
-      }).catch(function(){ openPing('Ubicacion: no disponible'); });
-    }
-    var active=0,last=Date.now(),maxPct=0,deepest='',sentH=false;
-    function tick(){ if(document.visibilityState==='visible'){active+=Date.now()-last;} last=Date.now(); }
-    setInterval(tick,1000);
+    var who=qp('to')||qp('p'); var whoLine=who?('\nDestinatario: '+who):'';
+    function post(title,tags,body){ if(ARDE_SELF)return; try{ fetch(TOPIC,{method:'POST',keepalive:true,headers:{'Title':title,'Tags':tags},body:body}); }catch(e){ try{navigator.sendBeacon(TOPIC,body);}catch(e2){} } }
+    var interacted=false;['scroll','mousemove','touchstart','keydown','pointerdown'].forEach(function(ev){window.addEventListener(ev,function(){interacted=true;},{passive:true});});
+    var vis=0,lastV=Date.now();function vtick(){ if(document.visibilityState==='visible')vis+=Date.now()-lastV; lastV=Date.now(); }setInterval(vtick,1000);
+    var maxPct=0,deepest='';
     function onScroll(){ var h=document.documentElement; var sc=h.scrollTop||document.body.scrollTop||0; var p=Math.round((sc+h.clientHeight)/h.scrollHeight*100); if(p>maxPct)maxPct=Math.min(100,p); }
     window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
-    var eb=[].slice.call(document.querySelectorAll('.eyebrow'));
-    if(eb.length && 'IntersectionObserver' in window){
-      var io=new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ deepest=e.target.textContent.trim().replace(/\s+/g,' '); }});},{threshold:.4});
-      eb.forEach(function(el){io.observe(el);});
-    }
-    function fmt(ms){var s=Math.round(ms/1000),m=Math.floor(s/60);return m+'m '+(s%60)+'s';}
-    function sendH(){ if(sentH)return; sentH=true; tick();
-      post('ARDE - Lectura: '+LABEL,'book,bar_chart','Leyo: '+LABEL+whoLine+'\nProfundidad: '+maxPct+'%'+(maxPct>=90?' (llego al final)':'')+'\nSeccion mas avanzada: '+(deepest||'inicio')+'\nTiempo activo: '+fmt(active)); }
-    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden')sendH(); });
-    window.addEventListener('pagehide',sendH);
-    document.addEventListener('click',function(ev){
-      var a=ev.target.closest&&ev.target.closest('a'); if(!a)return;
-      var href=a.getAttribute('href')||''; var isCTA=a.classList.contains('btn')||href.indexOf('wa.me')>-1||href.indexOf('mailto:')>-1;
-      if(!isCTA)return;
-      var t=(a.textContent||'').trim().replace(/\s+/g,' ').slice(0,40);
-      post('ARDE - Clic CTA: '+LABEL,'point_up,white_check_mark','Hizo clic en "'+t+'"\nPropuesta: '+LABEL+whoLine);
-    },true);
+    var eb=[].slice.call(document.querySelectorAll('.eyebrow,.board-tag,h2'));
+    if(eb.length && 'IntersectionObserver' in window){ var io2=new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ deepest=e.target.textContent.trim().replace(/\s+/g,' ').slice(0,60); }});},{threshold:.4}); eb.forEach(function(el){io2.observe(el);}); }
+    var openSent=false;
+    function maybeOpen(){ if(openSent)return; vtick();
+      if((interacted && vis>=2500) || vis>=9000){ openSent=true;
+        var visits=0; try{ visits=parseInt(localStorage.getItem('arde_v_'+KEY)||'0',10)||0; if(!sessionStorage.getItem('arde_s_'+KEY)){ sessionStorage.setItem('arde_s_'+KEY,'1'); visits+=1; localStorage.setItem('arde_v_'+KEY,String(visits)); } }catch(e){}
+        var rep=visits>=2?(' (visita #'+visits+', repetida)'):'';
+        function openPing(loc){ post('ARDE - Abrieron: '+LABEL,(visits>=2?'fire,eyes':'eyes'),'Abrieron: '+LABEL+rep+whoLine+'\n'+loc+'\nLlego desde: '+(document.referrer||'enlace directo')+'\nDispositivo: '+ua.slice(0,90)); }
+        fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true; openPing('Ubicacion: '+(d.city||'?')+', '+(d.region||'')+' '+(d.country_name||'?')+' (IP '+(d.ip||'?')+')'); }).catch(function(){ openPing('Ubicacion: no disponible'); });
+      } }
+    var gi=setInterval(function(){ maybeOpen(); if(openSent)clearInterval(gi); },1000);
+    var sentH=false;function fmt(ms){var s=Math.round(ms/1000),m=Math.floor(s/60);return m+'m '+(s%60)+'s';}
+    function sendH(){ if(sentH)return; sentH=true; vtick(); if(!openSent)return; post('ARDE - Lectura: '+LABEL,'book,bar_chart','Leyo: '+LABEL+whoLine+'\nProfundidad: '+maxPct+'%'+(maxPct>=90?' (llego al final)':'')+'\nSeccion: '+(deepest||'inicio')+'\nTiempo activo: '+fmt(vis)); }
+    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden')sendH(); }); window.addEventListener('pagehide',sendH);
+    document.addEventListener('click',function(ev){ var a=ev.target.closest&&ev.target.closest('a'); if(!a)return; var href=a.getAttribute('href')||''; if(!(a.classList.contains('btn')||a.classList.contains('cta')||href.indexOf('wa.me')>-1||href.indexOf('mailto:')>-1||href.indexOf('.pdf')>-1))return; var t=(a.textContent||'').trim().replace(/\s+/g,' ').slice(0,40); post('ARDE - Clic CTA: '+LABEL,'point_up','Hizo clic en "'+t+'"\nPropuesta: '+LABEL+whoLine); },true);
   }catch(e){}
 })();
 </script>
