@@ -433,7 +433,7 @@ requestAnimationFrame(movePlane);
 /* ARDE tracking v2 hardened: filtro bots + Chrome<90 + scanners + gate humano + self-mute + apertura/heatmap/clics (ntfy) */
 (function(){
   try{
-    var ARDE_SELF=false;try{fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true;}).catch(function(){});}catch(e){}
+    var ARDE_SELF=false;try{fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||''))&&!/[?&]test=1/i.test(location.search))ARDE_SELF=true;}).catch(function(){});}catch(e){}
     var TOPIC='https://ntfy.sh/arde-cotizaciones-7k2pqz9x';
     var LABEL='Aeromexico (propuesta)', KEY='aeromxprop';
     var ua=navigator.userAgent||'';
@@ -454,7 +454,7 @@ requestAnimationFrame(movePlane);
         var visits=0; try{ visits=parseInt(localStorage.getItem('arde_v_'+KEY)||'0',10)||0; if(!sessionStorage.getItem('arde_s_'+KEY)){ sessionStorage.setItem('arde_s_'+KEY,'1'); visits+=1; localStorage.setItem('arde_v_'+KEY,String(visits)); } }catch(e){}
         var rep=visits>=2?(' (visita #'+visits+', repetida)'):'';
         function openPing(loc){ post('ARDE - Abrieron: '+LABEL,(visits>=2?'fire,eyes':'eyes'),'Abrieron: '+LABEL+rep+whoLine+'\n'+loc+'\nLlego desde: '+(document.referrer||'enlace directo')+'\nDispositivo: '+ua.slice(0,90)); }
-        fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||'')))ARDE_SELF=true; openPing('Ubicacion: '+(d.city||'?')+', '+(d.region||'')+' '+(d.country_name||'?')+' (IP '+(d.ip||'?')+')'); }).catch(function(){ openPing('Ubicacion: no disponible'); });
+        fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(d){if(/rionegro|llanogrande/i.test((d.city||'')+' '+(d.region||''))&&!/[?&]test=1/i.test(location.search))ARDE_SELF=true; openPing('Ubicacion: '+(d.city||'?')+', '+(d.region||'')+' '+(d.country_name||'?')+' (IP '+(d.ip||'?')+')'); }).catch(function(){ openPing('Ubicacion: no disponible'); });
       } }
     var gi=setInterval(function(){ maybeOpen(); if(openSent)clearInterval(gi); },1000);
     var sentH=false;function fmt(ms){var s=Math.round(ms/1000),m=Math.floor(s/60);return m+'m '+(s%60)+'s';}
